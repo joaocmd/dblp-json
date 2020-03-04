@@ -22,7 +22,8 @@ const genericSchema = [
 const authorSchema = [
   Joi.string(),
   Joi.object().keys({
-    $value: Joi.string(),
+    _value: Joi.string(),
+    pid: Joi.string(),
     aux: Joi.any(),
     bibtex: Joi.any(),
     orcid: Joi.any(),
@@ -125,6 +126,7 @@ const rawJSONSchema = Joi.object().keys({
   dblpperson: Joi.object().keys({
     // optional properties
     name: Joi.string(),
+    pid: Joi.string(),
     n: Joi.string(),
     // required person property
     person: personSchema.required(),
