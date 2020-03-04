@@ -5,6 +5,12 @@ const request = require('request');
 // Local requests
 const DBLPPerson = require('./dblp-person.js');
 
+const xml2jsOptions = {
+  charkey: '_value',
+  mergeAttrs: true,
+  explicitArray: false,
+}
+
 /**
  * DBLP class
  * It is responsible for requesting the XML file containing
@@ -21,11 +27,6 @@ class DBLP {
   constructor() {
     this.nameBaseURL = 'https://dblp.org/pers/xx/';
     this.pidBaseURL = 'http://dblp.org/pid';
-    this.options = {
-      charkey: '_value',
-      mergeAttrs: true,
-      explicitArray: false,
-    };
   }
 
   /**
@@ -44,7 +45,7 @@ class DBLP {
       const url = this.nameBaseURL + xml;
 
       // Get the data in the url
-      DBLP.get(url, this.options).then((result) => {
+      DBLP.get(url, xml2jsOptions).then((result) => {
         resolve(result);
       }, () => {
         reject(new Error(`[DBLP getByName] Bad request - check requested user name - ${url}`));
@@ -64,7 +65,7 @@ class DBLP {
       const url = `${this.pidBaseURL}/${pid}.xml`;
 
       // Get the data in the url
-      DBLP.get(url, this.options).then((result) => {
+      DBLP.get(url, xml2jsOptions).then((result) => {
         resolve(result);
       }, () => {
         reject(new Error(`[DBLP getByPID] Bad request - check requested PID - ${url}`));
@@ -88,7 +89,7 @@ class DBLP {
       const url = `${this.pidBaseURL}/${pid}.xml`;
 
       // Get the data in the url
-      DBLP.get(url, this.options).then((result) => {
+      DBLP.get(url, xml2jsOptions).then((result) => {
         resolve(result);
       }, () => {
         reject(new Error(`[DBLP getByHomepage] Bad request - check requested homepage - ${url}`));
@@ -107,7 +108,7 @@ class DBLP {
         // Check response status code
         if (response && response.statusCode === 200) {
           // Create parser instance
-          const parser = new xml2js.Parser(parseOptions);
+          const parser = new xml2js.Parser({...xml2jsOptions, ...parseOptions});
 
           // Parse XML
           parser.parseString(body, (parseError, xml) => {
